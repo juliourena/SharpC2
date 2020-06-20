@@ -50,6 +50,17 @@ namespace TeamServer.Tests.ClientTests
             Assert.Null(results.Token);
         }
 
+        [Fact]
+        public void GetConnectedClients()
+        {
+            var request = new ClientAuthenticationRequest { Nick = "plaintext", Password = "a" };
+            Controllers.ClientController.ClientLogin(request);
+            request = new ClientAuthenticationRequest { Nick = "julio", Password = "a" };
+            Controllers.ClientController.ClientLogin(request);
 
+            var result = Controllers.ClientController.GetConnectedClient();
+
+            Assert.Equal(new List<string> { "plaintext", "julio" }, result);
+        }
     }
 }

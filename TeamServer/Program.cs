@@ -7,11 +7,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using TeamServer.Controllers;
+using TeamServer.Listeners;
 
 namespace TeamServer
 {
     public class Program
     {
+        public static ServerController ServerController { get; private set; }
+
         public static void Main(string[] args)
         {
             if (args.Length < 1)
@@ -21,6 +24,10 @@ namespace TeamServer
             }
 
             AuthenticationController.SetPassword(args[0]);
+
+            ServerController = new ServerController();
+            // do more setup
+            //ServerController.Start();
 
             CreateHostBuilder(args).Build().Run();
         }
