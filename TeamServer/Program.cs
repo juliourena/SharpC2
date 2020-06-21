@@ -17,18 +17,8 @@ namespace TeamServer
 
         public static void Main(string[] args)
         {
-            if (args.Length < 1)
-            {
-                Console.Error.WriteLine("No Server password provided");
-                return;
-            }
-
-            AuthenticationController.SetPassword(args[0]);
-
-            ServerController = new ServerController();
-            // do more setup
-            //ServerController.Start();
-
+            var pass = args.Length > 0 ? args[0] : string.Empty;
+            StartTeamServer(pass);
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -38,5 +28,17 @@ namespace TeamServer
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
+        public static void StartTeamServer(string pass = "")
+        {
+            if (string.IsNullOrEmpty(pass))
+            {
+                throw new ArgumentException("Password cannot be null");
+            }
+
+            AuthenticationController.SetPassword(pass);
+
+            ServerController = new ServerController();
+        }
     }
 }

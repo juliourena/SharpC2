@@ -16,4 +16,8 @@
     <ProjectReference Include="..\TeamServer\TeamServer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ListenerTests\" />
+  </ItemGroup>
+
 </Project>

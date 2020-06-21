@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamServer", "TeamServer\TeamServer.csproj", "{3EA6DC86-3766-48BA-B717-74F241C5A328}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamServer", "TeamServer\TeamServer.csproj", "{3EA6DC86-3766-48BA-B717-74F241C5A328}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamServer.Tests", "TeamServer.Tests\TeamServer.Tests.csproj", "{79DE4EC1-73BC-4456-B285-1061C4337B12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamServer.Tests", "TeamServer.Tests\TeamServer.Tests.csproj", "{79DE4EC1-73BC-4456-B285-1061C4337B12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpAgent", "TeamServer\Agents\HttpAgent\HttpAgent.csproj", "{38F9679E-CCEA-4EA6-901D-CA72B3C17893}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{79DE4EC1-73BC-4456-B285-1061C4337B12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79DE4EC1-73BC-4456-B285-1061C4337B12}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79DE4EC1-73BC-4456-B285-1061C4337B12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38F9679E-CCEA-4EA6-901D-CA72B3C17893}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38F9679E-CCEA-4EA6-901D-CA72B3C17893}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38F9679E-CCEA-4EA6-901D-CA72B3C17893}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38F9679E-CCEA-4EA6-901D-CA72B3C17893}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

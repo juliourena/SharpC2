@@ -9,5 +9,6 @@ namespace TeamServer.Listeners
     {
         public string ListenerId { get; set; } = Helpers.GeneratePseudoRandomString(8);
         public int BindPort { get; set; }
+        public ListenerType Type { get; set; }
     }
 }

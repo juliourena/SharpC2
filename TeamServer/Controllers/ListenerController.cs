@@ -14,7 +14,7 @@ namespace TeamServer.Controllers
         public List<HTTPCommModule> HTTPListeners { get; set; } = new List<HTTPCommModule>();
         public List<ListenerTcp> TCPListeners { get; set; } = new List<ListenerTcp>();
 
-        public void StartHttpListener(NewHttpListenerRequest request)
+        public IEnumerable<ListenerBase> StartHttpListener(NewHttpListenerRequest request)
         {
             var listener = new ListenerHttp
             {
@@ -29,10 +29,38 @@ namespace TeamServer.Controllers
             };
 
             HTTPListeners.Add(module);
-
+            
             module.Init();
             module.Start();
+
+            var result = new List<ListenerBase>();
+            foreach (var value in HTTPListeners)
+            {
+                result.Add(value.Listener);
+            }
+
+            return result;
         }
+
+        //public void StartHttpListener(NewHttpListenerRequest request)
+        //{
+        //    var listener = new ListenerHttp
+        //    {
+        //        BindPort = request.BindPort,
+        //        ConnectAddress = request.ConnectAddress,
+        //        ConnectPort = request.ConnectPort
+        //    };
+
+        //    var module = new HTTPCommModule
+        //    {
+        //        Listener = listener
+        //    };
+
+        //    HTTPListeners.Add(module);
+
+        //    module.Init();
+        //    module.Start();
+        //}
 
         public void StartTcpListener(NewTcpListenerRequest request)
         {
@@ -43,6 +71,8 @@ namespace TeamServer.Controllers
             };
 
             TCPListeners.Add(listener);
+
+            
         }
 
         public IEnumerable<ListenerBase> GetListeners()

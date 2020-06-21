@@ -9,5 +9,6 @@ namespace TeamServer.Listeners
     {
         public string ConnectAddress { get; set; }
         public int ConnectPort { get; set; }
+        
     }
 }

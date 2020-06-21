@@ -8,59 +8,51 @@ namespace TeamServer.Tests.ClientTests
 {
     public class Client
     {
-        [Fact]
-        public void SuccessfullClientLogin()
+        public Client()
         {
-            var request = new ClientAuthenticationRequest { Nick = "plaintext", Password = "a" };
-            var results = Controllers.ClientController.ClientLogin(request);
-
-            Assert.Equal(ClientAuthenticationResult.AuthResult.LoginSuccess, results.Result);
-            Assert.NotNull(results.Token);
+            new TestClient();
         }
 
         [Fact]
-        public void BadPasswordClientLogin()
+        public async void LoginSuccess()
         {
-            var request = new ClientAuthenticationRequest { Nick = "plaintext", Password = "23" };
-            var results = Controllers.ClientController.ClientLogin(request);
+            var result = await TestClient.ClientLogin(TeamServer.Helpers.GeneratePseudoRandomString(6), "a");
 
-            Assert.Equal(ClientAuthenticationResult.AuthResult.BadPassword, results.Result);
-            Assert.Null(results.Token);
+            Assert.Equal(ClientAuthenticationResult.AuthResult.LoginSuccess, result.Result);
+            Assert.NotNull(result.Token);
         }
 
         [Fact]
-        public void NickInUse()
+        public async void BadPassword()
         {
-            var request = new ClientAuthenticationRequest { Nick = "plaintext", Password = "a" };
-            Controllers.ClientController.ClientLogin(request);
-            var results = Controllers.ClientController.ClientLogin(request);
-            
-            Assert.Equal(ClientAuthenticationResult.AuthResult.NickInUse, results.Result);
-            Assert.Null(results.Token);
+            var result = await TestClient.ClientLogin(TeamServer.Helpers.GeneratePseudoRandomString(6), "a");
+
+            Assert.Equal(ClientAuthenticationResult.AuthResult.BadPassword, result.Result);
+            Assert.NotNull(result.Token);
         }
 
         [Fact]
-        public void InvalidRequest()
+        public async void NickInUse()
         {
-            var request = new ClientAuthenticationRequest { Nick = "plaintext", Password = "" };
-            var results = Controllers.ClientController.ClientLogin(request);
-            Controllers.ClientController.ClientLogin(request);
+            var user = TeamServer.Helpers.GeneratePseudoRandomString(6);
 
-            Assert.Equal(ClientAuthenticationResult.AuthResult.InvalidRequest, results.Result);
-            Assert.Null(results.Token);
+            await TestClient.ClientLogin(user, "a");
+            var result = await TestClient.ClientLogin(user, "a");
+
+            Assert.Equal(ClientAuthenticationResult.AuthResult.NickInUse, result.Result);
+            Assert.NotNull(result.Token);
         }
 
-        [Fact]
-        public void GetConnectedClients()
+        [Theory]
+        [InlineData("plaintext", "")]
+        [InlineData("", "a")]
+        [InlineData("", "b")]
+        public async void InvalidRequest(string nick, string pass)
         {
-            var request = new ClientAuthenticationRequest { Nick = "plaintext", Password = "a" };
-            Controllers.ClientController.ClientLogin(request);
-            request = new ClientAuthenticationRequest { Nick = "julio", Password = "a" };
-            Controllers.ClientController.ClientLogin(request);
+            var result = await TestClient.ClientLogin(nick, pass);
 
-            var result = Controllers.ClientController.GetConnectedClient();
-
-            Assert.Equal(new List<string> { "plaintext", "julio" }, result);
+            Assert.Equal(ClientAuthenticationResult.AuthResult.InvalidRequest, result.Result);
+            Assert.NotNull(result.Token);
         }
     }
 }

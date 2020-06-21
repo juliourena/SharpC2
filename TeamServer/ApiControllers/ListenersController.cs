@@ -24,10 +24,16 @@ namespace TeamServer.ApiControllers
         }
 
         [HttpPost("http")]
-        public void NewHttpListener([FromBody]NewHttpListenerRequest request)
+        public IEnumerable<ListenerBase> NewHttpListener([FromBody]NewHttpListenerRequest request)
         {
-            Program.ServerController.ListenerController.StartHttpListener(request);
+            return Program.ServerController.ListenerController.StartHttpListener(request);
         }
+
+        //[HttpPost("http")]
+        //public void NewHttpListener([FromBody] NewHttpListenerRequest request)
+        //{
+        //    Program.ServerController.ListenerController.StartHttpListener(request);
+        //}
 
         [HttpPost("tcp")]
         public void NewTcpListener([FromBody]NewTcpListenerRequest request)
