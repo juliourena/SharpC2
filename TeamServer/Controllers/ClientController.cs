@@ -29,7 +29,7 @@ namespace TeamServer.Controllers
             else
             {
                 result.Result = ClientAuthenticationResult.AuthResult.LoginSuccess;
-                result.Token = AuthenticationController.GenerateAuthenticationToken(request.Nick);
+                result.Token = AuthenticationController.GenerateAuthenticationToken(request.Nick); 
 
                 AddNewClient(request.Nick);
             }

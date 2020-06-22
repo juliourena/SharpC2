@@ -15,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using NSwag.Generation.Processors.Security;
+using TeamServer.ApiControllers;
 using TeamServer.Controllers;
 
 namespace TeamServer
@@ -42,11 +43,11 @@ namespace TeamServer
                 c.PostProcess = d =>
                 {
                     d.Info.Version = "v1";
-                    d.Info.Title = "SharpC2 API";
+                    d.Info.Title = "SharpC2 API copy/pasted from Rastamouse Youtube Series";
                     d.Info.Contact = new NSwag.OpenApiContact
                     {
                         Name = "Julio Urena, Daniel Duggan, Adam Chester",
-                        Url = "https://github.com/SharpC2/SharpC2"
+                        Url = "https://github.com/juliourena/SharpC2"
                     };
                 };
                 c.DocumentProcessors.Add(new SecurityDefinitionAppender("Bearer", new NSwag.OpenApiSecurityScheme
@@ -57,6 +58,7 @@ namespace TeamServer
                     In = NSwag.OpenApiSecurityApiKeyLocation.Header
                 }));
                 c.OperationProcessors.Add(new OperationSecurityScopeProcessor("Bearer"));
+                
             });
 
             services.AddAuthentication(a =>
@@ -100,6 +102,7 @@ namespace TeamServer
 
             app.UseOpenApi();
             app.UseSwaggerUi3();
+
         }
     }
 }

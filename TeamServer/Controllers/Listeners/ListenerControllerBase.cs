@@ -9,18 +9,23 @@ using TeamServer.Modules;
 
 namespace TeamServer.Controllers
 {
-    public class ListenerController
+    public class ListenerControllerBase
     {
         public List<HTTPCommModule> HTTPListeners { get; set; } = new List<HTTPCommModule>();
         public List<ListenerTcp> TCPListeners { get; set; } = new List<ListenerTcp>();
-
         public IEnumerable<ListenerBase> StartHttpListener(NewHttpListenerRequest request)
         {
+            if (!IPAddress.TryParse(request.ConnectAddress, out _))
+            {
+                throw new ArgumentException("Invalid IP Address");
+            }
             var listener = new ListenerHttp
             {
+                Type = ListenerType.HTTP,
                 BindPort = request.BindPort,
                 ConnectAddress = request.ConnectAddress,
-                ConnectPort = request.ConnectPort
+                ConnectPort = request.ConnectPort,
+                TrafficProfile = request.TrafficProfile ?? new HttpTrafficProfile() // if trafficprofile is null them, create a new instance and asign it. 
             };
 
             var module = new HTTPCommModule
@@ -84,7 +89,7 @@ namespace TeamServer.Controllers
                 result.Add(listener);
             }
 
-            foreach(var module in HTTPListeners)
+            foreach (var module in HTTPListeners)
             {
                 result.Add(module.Listener);
             }
@@ -106,6 +111,7 @@ namespace TeamServer.Controllers
                 if (httpModule != null)
                 {
                     HTTPListeners.Remove(httpModule);
+                    httpModule.Stop(); // PlanText - added to Stop the listener. 
                 }
             }
 

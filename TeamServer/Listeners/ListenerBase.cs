@@ -11,4 +11,10 @@ namespace TeamServer.Listeners
         public int BindPort { get; set; }
         public ListenerType Type { get; set; }
     }
+
+    public enum ListenerType
+    {
+        HTTP,
+        TCP
+    }
 }
