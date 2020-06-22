@@ -9,7 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamServer.Tests", "TeamSer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpAgent", "TeamServer\Agents\HttpAgent\HttpAgent.csproj", "{38F9679E-CCEA-4EA6-901D-CA72B3C17893}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AgentCore", "TeamServer\Agents\AgentCore\AgentCore.shproj", "{4900C5B3-633C-4774-8FAA-1A6B3667E76D}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		TeamServer\Agents\AgentCore\AgentCore.projitems*{38f9679e-ccea-4ea6-901d-ca72b3c17893}*SharedItemsImports = 4
+		TeamServer\Agents\AgentCore\AgentCore.projitems*{4900c5b3-633c-4774-8faa-1a6b3667e76d}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

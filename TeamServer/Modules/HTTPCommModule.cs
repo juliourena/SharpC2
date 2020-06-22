@@ -28,11 +28,15 @@ namespace TeamServer.Modules
         private Socket Socket { get; set; }
 
         public ModuleStatus ModuleStatus { get; private set; } = ModuleStatus.Stopped;
-        
+        private byte[] PrependData { get; set; } = new byte[] { };
+        private byte[] AppenedData { get; set; } = new byte[] { };
+
         private static ManualResetEvent AllDone = new ManualResetEvent(false);
         public void Init()
         {
             Socket = new Socket(SocketType.Stream, ProtocolType.IP);
+            //PrependData = ProcessOutputProfile(Listener.TrafficProfile.ServerProfile.OutputProfile.PrependData);
+            //AppenedData = ProcessOutputProfile(Listener.TrafficProfile.ServerProfile.OutputProfile.AppendData);
         }
 
         //public void Start()
@@ -174,6 +178,24 @@ namespace TeamServer.Modules
 
         }
 
+        private byte[] ProcessOutputProfile(string data)
+        {
+            var result = new byte[] { };
+            if (data != default)
+            {
+                if (data.Substring(0, 2).Equals("\\x"))
+                {
+                    result = ParseBytes(data);
+                }
+                else
+                {
+                    result = Encoding.UTF8.GetBytes(data);
+                }
+            }
+
+            return result;
+        }
+
         private byte[] ParseBytes(string data)
         {
             var bytes = new List<byte>();
@@ -203,10 +225,6 @@ namespace TeamServer.Modules
                 throw new Exception(e.Message);
             }
         }
-
-        
-
-        
 
         public void Stop()
         {
