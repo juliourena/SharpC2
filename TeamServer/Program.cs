@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using TeamServer.Controllers;
 using TeamServer.Listeners;
+using TeamServer.Modules;
 
 namespace TeamServer
 {
@@ -39,6 +40,10 @@ namespace TeamServer
             AuthenticationController.SetPassword(pass);
 
             ServerController = new ServerController();
+
+            ServerController.RegisterServerModule(new CoreServerModule());
+
+            ServerController.Start();
         }
     }
 }

@@ -11,11 +11,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpAgent", "TeamServer\Age
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AgentCore", "TeamServer\Agents\AgentCore\AgentCore.shproj", "{4900C5B3-633C-4774-8FAA-1A6B3667E76D}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Common", "TeamServer\Agents\Common\Common.shproj", "{6077B230-A1EB-44CC-8395-9A5C29C90902}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		TeamServer\Agents\AgentCore\AgentCore.projitems*{38f9679e-ccea-4ea6-901d-ca72b3c17893}*SharedItemsImports = 4
+		TeamServer\Agents\Common\Common.projitems*{38f9679e-ccea-4ea6-901d-ca72b3c17893}*SharedItemsImports = 4
 		TeamServer\Agents\AgentCore\AgentCore.projitems*{3ea6dc86-3766-48ba-b717-74f241c5a328}*SharedItemsImports = 5
 		TeamServer\Agents\AgentCore\AgentCore.projitems*{4900c5b3-633c-4774-8faa-1a6b3667e76d}*SharedItemsImports = 13
+		TeamServer\Agents\Common\Common.projitems*{6077b230-a1eb-44cc-8395-9a5c29c90902}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

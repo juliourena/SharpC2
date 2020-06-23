@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Common;
+using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -24,8 +25,8 @@ namespace TeamServer.Tests
         internal static async Task<ClientAuthenticationResult> ClientLogin(string nick, string pass)
         {
             var authRequest = new ClientAuthenticationRequest { Nick = nick, Password = pass };
-            var response = await HttpClient.PostAsync("api/Client", Helpers.Serialise(authRequest));
-            var result = Helpers.Deserialise<ClientAuthenticationResult>(response.Content.ReadAsStringAsync());
+            var response = await HttpClient.PostAsync("api/Client", Serialisation.SerialiseData(authRequest));
+            var result = Serialisation.DeserialiseData<ClientAuthenticationResult>(response.Content.ReadAsStringAsync());
 
             if (result.Result == ClientAuthenticationResult.AuthResult.LoginSuccess)
             {
