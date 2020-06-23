@@ -14,6 +14,7 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		TeamServer\Agents\AgentCore\AgentCore.projitems*{38f9679e-ccea-4ea6-901d-ca72b3c17893}*SharedItemsImports = 4
+		TeamServer\Agents\AgentCore\AgentCore.projitems*{3ea6dc86-3766-48ba-b717-74f241c5a328}*SharedItemsImports = 5
 		TeamServer\Agents\AgentCore\AgentCore.projitems*{4900c5b3-633c-4774-8faa-1a6b3667e76d}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

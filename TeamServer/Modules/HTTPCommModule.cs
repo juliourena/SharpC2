@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
+﻿using AgentCore;
+using AgentCore.Models;
+using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -6,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -88,11 +91,18 @@ namespace TeamServer.Modules
             var state = ar.AsyncState as StateObject;
             var handler = state.workSocket;
             var bytesRead = handler.EndReceive(ar);
-            var data = state.buffer;
+            //var data = state.buffer;
 
             if (bytesRead > 0)
             {
-                SendData(handler, data);
+                var dataReceived = state.buffer; //new
+                var webRequest = Encoding.UTF8.GetString(dataReceived); //new
+
+                var metadata = ExtractMetadata(webRequest);
+                var agentTasks = GetAgentTask(dataReceived); //new
+                var transformedData = TransformOutputData(agentTasks); //new
+                SendData(handler, transformedData); //new
+                //SendData(handler, data);
             }
         }
 
@@ -209,6 +219,17 @@ namespace TeamServer.Modules
                 }
             }
             return bytes.ToArray();
+        }
+
+        private Metadata ExtractMetadata(string webRequest)
+        {
+            Metadata metadata = null;
+            var regex = Regex.Match(webRequest, "Cookie: ([^\\s].*)");
+            if (regex.Captures.Count > 0)
+            {
+                metadata = AgentCore.Helpers.DeserialiseData<Metadata>(Convert.FromBase64String(regex.Groups[1].Value));
+            }
+            return metadata;
         }
 
         private void SendCallback(IAsyncResult ar)

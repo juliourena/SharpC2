@@ -9,8 +9,13 @@
     <Import_RootNamespace>AgentCore</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Controllers\AgentController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controllers\ConfigController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ICommModule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\AgentStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ConfigModels.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Metadata.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ModuleStatus.cs" />
   </ItemGroup>
 </Project>

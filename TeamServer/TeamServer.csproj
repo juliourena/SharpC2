@@ -24,5 +24,7 @@
     <Folder Include="Agents\References\net40\" />
   </ItemGroup>
 
+  <Import Project="Agents\AgentCore\AgentCore.projitems" Label="Shared" />
+
 
 </Project>

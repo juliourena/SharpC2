@@ -6,7 +6,7 @@ namespace AgentCore.Models
 {
     public enum ConfigSetting
     {
-        AgentId,
+        Metadata,
         ConnectHost,
         ConnectPort,
         SleepTime,

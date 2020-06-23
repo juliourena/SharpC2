@@ -5,10 +5,10 @@ using System.Text;
 
 namespace AgentCore.Interfaces
 {
-    interface ICommModule
+    public interface ICommModule
     {
         void Init(ConfigController config);
-        void Run();
+        void Start();
         void SendData();
         bool RecvData();
         void Stop();
